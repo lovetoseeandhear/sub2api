@@ -1,0 +1,12 @@
+services:
+  sub2api:
+    environment:
+      - TOTP_ENCRYPTION_KEY=${TOTP_ENCRYPTION_KEY:-}
+    networks:
+      - default
+      - existing_new_api
+
+networks:
+  existing_new_api:
+    external: true
+    name: new-api_new-api-network
