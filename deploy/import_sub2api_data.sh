@@ -85,8 +85,15 @@ restore_db() {
 
 restore_app_data() {
   local export_dir="$1"
-  local app_data_dir="$export_dir/app_data/data"
-  [[ -d "$app_data_dir" ]] || { echo "ERROR: app data directory not found: $app_data_dir" >&2; exit 1; }
+  local app_data_dir=""
+  if [[ -d "$export_dir/app_data/data" ]]; then
+    app_data_dir="$export_dir/app_data/data"
+  elif [[ -d "$export_dir/app_data" ]]; then
+    app_data_dir="$export_dir/app_data"
+  else
+    echo "ERROR: app data directory not found under: $export_dir/app_data{,/data}" >&2
+    exit 1
+  fi
 
   echo "[3/4] Backing up current /app/data in container"
   docker exec -i "$SUB2API_CONTAINER" sh -lc 'cp -a /app/data /app/data.bak.$(date +%Y%m%d_%H%M%S)'
